@@ -10,7 +10,7 @@ PS
 
 
 .env:
-# Settings marketplace
+# Settings marketplace .env
 
 DEBUG = True
 SECRET_KEY =        # Сгенерируйте секретный ключ
