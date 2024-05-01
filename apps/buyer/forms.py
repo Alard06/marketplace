@@ -9,6 +9,7 @@ class RegisterBuyerForm(UserCreationForm):
         fields = ['username',
                   'first_name',
                   'last_name',
+                  'telephone_number',
                   'age',
                   'email',
                   'password1',

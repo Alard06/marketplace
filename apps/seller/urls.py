@@ -1,4 +1,6 @@
 from django.urls import path
+
+from apps.buyer.views import BuyerRegisterView
 from apps.main.views import index
 from apps.seller.views import seller_index, seller_register
 
