@@ -21,3 +21,5 @@ class SenderForm(forms.Form):
     name = forms.CharField(max_length=50,
                            required=True,
                            label='Название магазина')
+    description = forms.CharField(max_length=500,
+                                  label='Дополнительно')

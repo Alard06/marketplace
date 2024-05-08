@@ -28,11 +28,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'telegram_django_bot',
+    'django_json_widget',
+
     'apps.seller',
     'apps.product',
     'apps.buyer',
     'apps.main',
-    'CustomUser'
+    'CustomUser',
+    'telegram_bot'
 ]
 
 MIDDLEWARE = [
@@ -131,3 +135,9 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_REDIRECT_URL = 'index'
+
+
+# Telegram bot
+
+API_KEY = os.environ.get('API_KEY')
+
