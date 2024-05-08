@@ -10,38 +10,50 @@ import telebot
 from telebot import types
 
 
-
 class Command(BaseCommand):
     help = 'Telegram bot '
 
     def handle(self, *args, **options):
         bot = telebot.TeleBot(API_KEY)
+
         @bot.message_handler(commands=['start'])
         def send_welcome(message):
             bot.send_message(message.from_user.id, 'Здравствуйте! Это бот администраторов маркетплейса "Барахолка"')
+
+            markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+            btn1 = types.KeyboardButton('/enter')
+            markup.add(btn1)
             bot.send_message(message.from_user.id, f'Чтобы получить доступ к админ-панели, напишите @alard666 и '
-                                                   f'сообщите владельцу Ваш telegram id: {message.from_user.id}')
+                                                   f'сообщите владельцу Ваш telegram id: {message.from_user.id}\n'
+                                                   f'После получения доступа, можете нажать на кнопку "/enter"', reply_markup=markup)
 
-        @bot.message_handler(content_types=['text'])
-        def send_message(message):
-            print(message.text)
-            print(message.from_user.id, Owner.objects.filter(telegram_id=message.chat.id).exists())
-            if Owner.objects.filter(telegram_id=message.chat.id).exists():
-                print(Owner.objects.get(telegram_id=message.from_user.id).role)
-                if Owner.objects.filter(telegram_id=message.from_user.id, role='A').exists():
-                    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-                    btn1 = types.KeyboardButton('Заявки')
-                    markup.add(btn1)
-                    bot.send_message(message.from_user.id, 'Выбери соответствующее действие', reply_markup=markup)
-
-                    if message.text == 'Заявки':
-                        bot.send_message(message.from_user.id, f'Количество необработанных заявок составляет: {SellerApplication.objects.count()}')
-
-                elif Owner.objects.filter(telegram_id=message.from_user.id, role='O').exists():
-                    bot.send_message(message.from_user.id, 'Owner?')
+        @bot.message_handler(commands=['enter'])
+        def enter_user(message):
+            print(message.from_user.id)
+            user = True if Owner.objects.filter(telegram_id=message.chat.id).exists() else False
+            role = Owner.objects.get(telegram_id=message.chat.id).role
+            print(role)
+            if role in 'AO':
+                print('AO')
+                markup = types.ReplyKeyboardMarkup()
+                if role == 'O':
+                    btn1 = types.KeyboardButton('/add_administrator')
+                    btn2 = types.KeyboardButton('/orders')
+                    btn3 = types.KeyboardButton('/work')
+                    markup.add(btn1, btn2, btn3)
                 else:
-                    bot.send_message(message.from_user.id, 'Ты кто?')
-            else:
-                bot.send_message(message.from_user.id, 'Врешь')
+                    btn2 = types.KeyboardButton('/orders')
+                    btn3 = types.KeyboardButton('/work')
+                    markup.add(btn2, btn3)
+                bot.send_message(message.from_user.id, f'Выберите операцию: ', reply_markup=markup)
 
-        bot.polling(none_stop=True, interval=0)
+        @bot.message_handler(commands=['orders'])
+        def send_message(message):
+            role = Owner.objects.get(telegram_id=message.chat.id).role
+            if role in 'AO':
+                bot.send_message(message.from_user.id, f'Количество необработанных заявок: {SellerApplication.objects.all().count()}', reply_markup='')
+        def show_applications(message):
+            applications = SellerApplication.objects.all().count()
+            bot.send_message(message.from_user.id, f'Количество заявок: {applications}')
+
+        bot.polling(none_stop=True, interval=0)     q
