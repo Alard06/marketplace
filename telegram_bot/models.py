@@ -13,5 +13,5 @@ class Owner(models.Model):
     telegram_id = models.CharField(max_length=40, unique=True)
 
     def __str__(self):
-        return f'{self.first_name} {self.last_name}: {self.user_id}'
+        return f'{self.first_name} {self.last_name}: {self.telegram_id}: {self.role}'
 

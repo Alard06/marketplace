@@ -12,6 +12,7 @@ class SenderForm(forms.Form):
     patronymic = forms.CharField(max_length=50,
                                  required=True,
                                  label='Отчество')
+    email = forms.EmailField()
     inn = forms.CharField(max_length=50,
                           required=True,
                           label='ИНН')

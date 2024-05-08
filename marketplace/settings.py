@@ -28,9 +28,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'telegram_django_bot',
-    'django_json_widget',
-
     'apps.seller',
     'apps.product',
     'apps.buyer',
