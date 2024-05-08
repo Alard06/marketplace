@@ -4,18 +4,18 @@ from django.core.management import BaseCommand
 
 from marketplace.settings import API_KEY
 from telegram_bot.models import *
-from CustomUser.models import CustomUser
+from apps.seller.models import SellerApplication
 
 import telebot
 from telebot import types
 
-bot = telebot.TeleBot(API_KEY)
 
 
 class Command(BaseCommand):
     help = 'Telegram bot '
 
     def handle(self, *args, **options):
+        bot = telebot.TeleBot(API_KEY)
         @bot.message_handler(commands=['start'])
         def send_welcome(message):
             bot.send_message(message.from_user.id, 'Здравствуйте! Это бот администраторов маркетплейса "Барахолка"')
@@ -32,10 +32,10 @@ class Command(BaseCommand):
                     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
                     btn1 = types.KeyboardButton('Заявки')
                     markup.add(btn1)
-                    bot.send_message(message.from_user.id, 'Выбери соответствующее действиеВ', reply_markup=markup)
+                    bot.send_message(message.from_user.id, 'Выбери соответствующее действие', reply_markup=markup)
 
                     if message.text == 'Заявки':
-                        bot.send_message(message.from_user.id, f'Количество необработанных заявок составляет: {CustomUser.objects.filter().count()}')
+                        bot.send_message(message.from_user.id, f'Количество необработанных заявок составляет: {SellerApplication.objects.count()}')
 
                 elif Owner.objects.filter(telegram_id=message.from_user.id, role='O').exists():
                     bot.send_message(message.from_user.id, 'Owner?')
