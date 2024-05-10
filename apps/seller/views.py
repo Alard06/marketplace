@@ -34,3 +34,6 @@ def seller_register(request):
     else:
         form = SenderForm()
     return render(request, 'seller/seller_register.html', {'form': form})
+
+
+

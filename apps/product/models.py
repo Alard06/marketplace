@@ -1,19 +1,34 @@
 from django.db import models
+from unidecode import unidecode
+
+from CustomUser.models import CustomUser
+from django.utils.text import slugify
 
 
 class Category(models.Model):
     name = models.CharField(max_length=40)
-    subcategories = models.ForeignKey('SubCategory', on_delete=models.CASCADE)
+    subcategories = models.ManyToManyField('SubCategory', blank=True, related_name='subcategories')
+    slug = models.SlugField(max_length=40, unique=True, blank=True, null=True)
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            self.slug = slugify(unidecode(self.name))
+        super().save(*args, **kwargs)
 
 
 class SubCategory(models.Model):
     name = models.CharField(max_length=100)
-
+    slug = models.SlugField(max_length=40, unique=True, blank=True, null=True)
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            self.slug = slugify(unidecode(self.name))
+        super().save(*args, **kwargs)
 
 
 class Product(models.Model):
@@ -21,8 +36,9 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     quantity = models.IntegerField()
     characteristic = models.TextField(max_length=500)
-    #image = models.ImageField(upload_to='')
+    # image = models.ImageField(upload_to='')
     subcategory = models.ManyToManyField(SubCategory)
+    seller = models.ManyToManyField(CustomUser, blank=True)
 
     def __str__(self):
         return self.name
