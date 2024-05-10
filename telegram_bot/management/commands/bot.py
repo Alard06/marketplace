@@ -1,5 +1,6 @@
 import os
 
+from django.contrib.auth.base_user import BaseUserManager
 from django.core.management import BaseCommand
 
 from CustomUser.models import CustomUser
@@ -125,27 +126,32 @@ class Command(BaseCommand):
             btn1 = types.KeyboardButton('/enter')
             btn2 = types.KeyboardButton('/work')
             markup.add(btn1, btn2)
-            if message.text.lower() == 'одобрить':
-                application = SellerApplication.objects.first()
-                CustomUser.objects.create(
-                    first_name=application.first_name,
-                    last_name=application.last_name,
-                    email=application.email,
-                    telephone_number=application.phone_number,
-                    inn=application.inn,
-                    permission_to_sell=True,
-                    seller=True,
-                    username=application.name
-                )
-                SellerApplication.objects.first().delete()
+            if not CustomUser.objects.filter(inn=SellerApplication.objects.first().inn):
+                if message.text.lower() == 'одобрить':
+                    application = SellerApplication.objects.first()
+                    password = BaseUserManager().make_random_password()
+                    user = CustomUser.objects.create(
+                        username=application.name,
+                        first_name=application.first_name,
+                        last_name=application.last_name,
+                        email=application.email,
+                        telephone_number=application.phone_number,
+                        inn=application.inn,
+                        permission_to_sell=True,
+                        seller=True,
+                    )
+                    user.set_password(password)
+                    user.save()
 
-                bot.send_message(message.from_user.id, 'Заявка одобрена..', reply_markup=markup)
-            elif message.text.lower() == 'отклонить':
-                msg, _ = format_message(message)
-                bot.send_message(message.from_user.id,
-                                 msg + ' \n\nОТКЛОНЕНА и УДАЛЕНА ИЗ БАЗЫ ДАННЫХ!',
-                                 reply_markup=markup)
-                SellerApplication.objects.first().delete()
+                    SellerApplication.objects.first().delete()
+
+                    bot.send_message(message.from_user.id, f'Заявка одобрена..\nЕго пароль: {password}', reply_markup=markup)
+                elif message.text.lower() == 'отклонить':
+                    msg, _ = format_message(message)
+                    bot.send_message(message.from_user.id,
+                                     msg + ' \n\nОТКЛОНЕНА и УДАЛЕНА ИЗ БАЗЫ ДАННЫХ!',
+                                     reply_markup=markup)
+                    SellerApplication.objects.first().delete()
 
         def check_role(message):
             """Проверка ролей администраторов"""
@@ -174,6 +180,7 @@ class Command(BaseCommand):
                 return 'Заявок нету', '...'
 
         def format_administrator_list(message):
+            """Список администраторов"""
             owners = Owner.objects.filter(role='A').all()
             msg = ''
             for owner in owners:
