@@ -1,5 +1,4 @@
-
-{%load static%}
+{% load static %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -24,11 +23,17 @@
         <a href="{% url 'category' %}">Категории</a>
         <a href="{% url 'seller_index' %}">Продавцам</a>
         <a href="{% url 'view_cart' %}">Корзина</a>
+        {% if request.user.seller %}
+            <a href="{% url 'seller_profile' %}">Личный кабинет продавца</a>
+        {% endif %}
     </div>
     <div class="content">
-        {%block content%}
+        {% block content %}
 
-        {%endblock%}
+        {% endblock %}
+    </div>
+    <div class="content2">
+
     </div>
 </div>
 

@@ -1,28 +1,41 @@
-body{
+body {
     margin: 0;
     padding: 0;
 }
 
-.container{
+.container {
     text-align: center;
-    background-color: #7cc9ff;
+
     height: 500px;
 }
 
-.content{
+.content {
     margin-top: 100px;
     font-size: 20px;
     position: relative;
     display: flex;
     align-items: center;
-    height: 50%;
+    height: 100%;
+    justify-content: center;
+    background-color: blue;
+}
+
+.content2 {
+    background: red;
+    margin-top: 0px;
+    font-size: 20px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 400px;
     justify-content: center;
 }
 
 .header {
-    background-color: #ce8f8f;
+    background-color: white;
     padding: 20px;
-    a{
+
+    a {
         margin-left: 20px;
         text-decoration: none;
         color: black;

@@ -37,3 +37,5 @@ def seller_register(request):
 
 
 
+def seller_profile(request):
+    return render(request, template_name='seller/seller_profile.html')
