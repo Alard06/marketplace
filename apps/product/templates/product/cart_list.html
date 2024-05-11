@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% for product in products %}
+        <div class="card">
+            <h3>{{ product.name }}</h3>
+            <p>Цена: {{ product.price }}</p>
+{#            <p>Продавец: {{ product.seller.CustomUser.username }}</p>#}
+            <h5><a href="{% url 'add_to_cart' product.id %}">В корзину</a></h5>
+        </div>
+    {% endfor %}
+{% endblock %}

@@ -22,6 +22,8 @@ class Category(models.Model):
 class SubCategory(models.Model):
     name = models.CharField(max_length=100)
     slug = models.SlugField(max_length=40, unique=True, blank=True, null=True)
+    products = models.ManyToManyField('Product',  blank=True)
+
     def __str__(self):
         return self.name
 
@@ -37,9 +39,17 @@ class Product(models.Model):
     quantity = models.IntegerField()
     characteristic = models.TextField(max_length=500)
     # image = models.ImageField(upload_to='')
-    subcategory = models.ManyToManyField(SubCategory)
     seller = models.ManyToManyField(CustomUser, blank=True)
 
     def __str__(self):
         return self.name
 
+
+class CartItem(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=0)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    date_added = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.quantity} x {self.product.name}'

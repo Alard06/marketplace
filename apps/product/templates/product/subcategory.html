@@ -4,7 +4,7 @@
     <div>
         <h2>Подкатегории</h2>
         {% for cat in  subcategory %}
-            <h4><a href="{{ cat.slug }}">{{ cat }}</a></h4>
+            <h4><a href="{% url 'product_list' cat.slug %}">{{ cat }}</a></h4>
 
         {% endfor %}
     </div>
